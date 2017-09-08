@@ -37,12 +37,16 @@ func (g *Graph) Has(node *Node) bool {
 	return false
 }
 
+// if v is nil, then the graph will have single node with no arcs.
 func (g *Graph) AddNodes(u *Node, v *Node) {
 	g.nodes = append(g.nodes, u)
-	g.nodes = append(g.nodes, v)
 
-	// Connect `u` node with `v` node.
-	g.arcs[u] = append(g.arcs[u], v)
+	if v != nil {
+		g.nodes = append(g.nodes, v)
+
+		// Connect `u` node with `v` node.
+		g.arcs[u] = append(g.arcs[u], v)
+	}
 }
 
 // returns all nodes in the graph

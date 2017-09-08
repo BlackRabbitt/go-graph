@@ -7,6 +7,30 @@ func TestBasicOperation(t *testing.T) {
 	u := NewNode([]byte("Wikipedia"))
 	v := NewNode([]byte("Org"))
 
+	g.AddNodes(u, nil)
+	if !g.Has(u) {
+		t.Errorf("Expected to have %s [node] in graph. ", u.ToString())
+	}
+
+	check := g.EdgeExist(u, nil)
+	if check == true {
+		t.Errorf("Expected not to have edge exist for `%s` and nil object", u.ToString())
+	}
+
+	check = g.EdgeExist(v, u)
+	if check == true {
+		t.Errorf("Expected not to have edge exist for `%s` and `%s`", v.ToString(), u.ToString())
+	}
+
+	check = g.EdgeExist(u, v)
+	if check == true {
+		t.Errorf("Expected not to have edge exist for `%s` and `%s`", u.ToString(), v.ToString())
+	}
+
+	if len(g.Nodes()) > 1 {
+		t.Errorf("Expected single node to be in the graph.")
+	}
+
 	g.AddNodes(u, v)
 	if !g.Has(u) {
 		t.Errorf("Expected to have %s [node] in graph. ", u.ToString())
@@ -28,4 +52,23 @@ func TestBasicOperation(t *testing.T) {
 	if g.EdgeExist(u, x) {
 		t.Errorf("Expected not to have Edge exist between `%s` and `%s`", u, x)
 	}
+}
+
+func BenchMarkOperation(b *testing.B) {
+	g,u,v := getTestData()
+	//b.Log("----Adding single node in a graph----")
+	for i:=0; i<b.N; i++ {
+		g.AddNodes(u, nil)
+	}
+	//b.Log("----Adding two nodes with arc in a graph----")
+	for i:=0; i<b.N; i++ {
+		g.AddNodes(u, v)
+	}
+}
+
+func getTestData() (g *Graph, u, v *Node) {
+	g = NewGraph()
+	u = NewNode([]byte("Wikipedia"))
+	v = NewNode([]byte("Article"))
+	return
 }
