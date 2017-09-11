@@ -39,19 +39,25 @@ func (g *Graph) Has(node *Node) bool {
 
 // if v is nil, then the graph will have single node with no arcs.
 func (g *Graph) AddNodes(u *Node, v *Node) {
-	g.nodes = append(g.nodes, u)
+	if !g.Has(u) {
+		g.nodes = append(g.nodes, u)
+	}
 
 	if v != nil {
-		g.nodes = append(g.nodes, v)
+		if !g.Has(v) {
+			g.nodes = append(g.nodes, v)
+		}
 
 		// Connect `u` node with `v` node.
-		g.arcs[u] = append(g.arcs[u], v)
+		if !g.EdgeExist(u, v) {
+			g.arcs[u] = append(g.arcs[u], v)
+		}
 	}
 }
 
 // returns all nodes in the graph
-func (g *Graph) Nodes() []*Node {
-	return g.nodes
+func (g *Graph) Nodes() ([]*Node, int) {
+	return g.nodes, len(g.nodes)
 }
 
 // EdgeExists returns true if atleast one arc exist from `u` to `v`
@@ -67,8 +73,8 @@ func (g *Graph) EdgeExist(u, v *Node) bool {
 }
 
 // returns adjacent arc nodes for node `u`
-func (g *Graph) Edges(u *Node) []*Node {
-	return g.arcs[u]
+func (g *Graph) Edges(u *Node) ([]*Node, int) {
+	return g.arcs[u], len(g.arcs[u])
 }
 
 func (u *Node) equal(v *Node) bool {

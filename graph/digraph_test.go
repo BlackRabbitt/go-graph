@@ -10,10 +10,9 @@ func setupTest() (g *Graph, u, v *Node) {
 }
 
 func TestBasicOperation(t *testing.T) {
-	g := NewGraph()
-	u := NewNode([]byte("Wikipedia"))
-	v := NewNode([]byte("Org"))
+	g,u,v := setupTest()
 
+	t.Log("Test: Add Single Node")
 	g.AddNodes(u, nil)
 	if !g.Has(u) {
 		t.Errorf("Expected to have %s [node] in graph. ", u.ToString())
@@ -34,10 +33,11 @@ func TestBasicOperation(t *testing.T) {
 		t.Errorf("Expected not to have edge exist for `%s` and `%s`", u.ToString(), v.ToString())
 	}
 
-	if len(g.Nodes()) > 1 {
+	if _,l:=g.Nodes(); l > 1 {
 		t.Errorf("Expected single node to be in the graph.")
 	}
 
+	t.Log("Test: Add Nodes with edge.")
 	g.AddNodes(u, v)
 	if !g.Has(u) {
 		t.Errorf("Expected to have %s [node] in graph. ", u.ToString())
@@ -48,7 +48,7 @@ func TestBasicOperation(t *testing.T) {
 	}
 
 	if !g.EdgeExist(u, v) {
-		t.Errorf("Expected to have Edge exist between `%s` and `%s`", u, v)
+		t.Errorf("Expected to have Edge exist between `%s` and `%s`", u.ToString(), v.ToString())
 	}
 
 	x := NewNode([]byte("Outlier"))
@@ -57,7 +57,19 @@ func TestBasicOperation(t *testing.T) {
 	}
 
 	if g.EdgeExist(u, x) {
-		t.Errorf("Expected not to have Edge exist between `%s` and `%s`", u, x)
+		t.Errorf("Expected not to have Edge exist between `%s` and `%s`", u.ToString(), x.ToString())
+	}
+
+	t.Log("Test: single node connected with multiple nodes")
+	g.AddNodes(u, x)
+	if _, l := g.Edges(u); l != 2 {
+		t.Errorf("Expected to have two nodes connected with %s", u.ToString())
+	}
+
+	t.Log("Test: Chaining of node. x<-u->v->x")
+	g.AddNodes(v, x)
+	if _, l := g.Nodes(); l!=3 {
+		t.Errorf("Expected to have two nodes in a graph")
 	}
 }
 
@@ -72,5 +84,23 @@ func BenchmarkAddNodeWithEdge(b *testing.B) {
 	g, u, v := setupTest()
 	for i:=0; i<b.N; i++ {
 		g.AddNodes(u, v)
+	}
+}
+
+func BenchmarkNodeConnectedWithTwoNode(b *testing.B) {
+	g, u, v := setupTest()
+	x := NewNode([]byte("X"))
+	for i:=0; i<b.N; i++ {
+		g.AddNodes(u, v)
+		g.AddNodes(u, x)
+	}
+}
+
+func BenchmarkAddChainOfNodes(b *testing.B) {
+	g, u, v := setupTest()
+	x := NewNode([]byte("Chaining"))
+	for i:=0; i<b.N; i++ {
+		g.AddNodes(u,v)
+		g.AddNodes(v,x)
 	}
 }
