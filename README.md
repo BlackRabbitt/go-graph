@@ -16,7 +16,7 @@ go get github.com/BlackRabbitt/go-graph
 ### Import in your project
 
 ```
-import github.com/BlackRabbitt/go-graph/graph/digraph
+import "github.com/BlackRabbitt/go-graph/digraph"
 ```
 
 ### Run Test and Benchmark
