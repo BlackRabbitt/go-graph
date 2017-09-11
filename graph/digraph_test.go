@@ -2,6 +2,13 @@ package digraph
 
 import "testing"
 
+func setupTest() (g *Graph, u, v *Node) {
+	g = NewGraph()
+	u = NewNode([]byte("Wikipedia"))
+	v = NewNode([]byte("Article"))
+	return
+}
+
 func TestBasicOperation(t *testing.T) {
 	g := NewGraph()
 	u := NewNode([]byte("Wikipedia"))
@@ -54,9 +61,16 @@ func TestBasicOperation(t *testing.T) {
 	}
 }
 
-func getTestData() (g *Graph, u, v *Node) {
-	g = NewGraph()
-	u = NewNode([]byte("Wikipedia"))
-	v = NewNode([]byte("Article"))
-	return
+func BenchmarkAddSingleNode(b *testing.B) {
+	g, u, _ := setupTest()
+	for i:=0; i<b.N; i++ {
+		g.AddNodes(u, nil)
+	}
+}
+
+func BenchmarkAddNodeWithEdge(b *testing.B) {
+	g, u, v := setupTest()
+	for i:=0; i<b.N; i++ {
+		g.AddNodes(u, v)
+	}
 }

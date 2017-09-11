@@ -14,7 +14,19 @@ go get github.com/BlackRabbitt/go-graph
 ```
 
 ### Import in your project
+
 ```
 import github.com/BlackRabbitt/go-graph/graph/digraph
 ```
-see test and examples for usage.
+
+### Run Test and Benchmark
+
+To run the tests:
+```
+go test
+```
+
+To run the benchmarks:
+```
+go test -test.bench 
+```
