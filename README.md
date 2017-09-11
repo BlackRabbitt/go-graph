@@ -30,3 +30,8 @@ To run the benchmarks:
 ```
 go test -test.bench 
 ```
+
+Test a memory consumption and an allocations count. 
+```
+go test -bench=. -benchmem
+```
