@@ -2,10 +2,10 @@ package digraph
 
 import "testing"
 
-func setupTest() (g *Graph, u, v *Node) {
+func setupTest() (g *Graph, u, v Node) {
 	g = NewGraph()
-	u = NewNode([]byte("Wikipedia"))
-	v = NewNode([]byte("Article"))
+	u = NewNode("Wikipedia")
+	v = NewNode("Article")
 	return
 }
 
@@ -13,12 +13,12 @@ func TestBasicOperation(t *testing.T) {
 	g,u,v := setupTest()
 
 	t.Log("Test: Add Single Node")
-	g.AddNodes(u, nil)
+	g.AddNodes(u, NewNode(""))
 	if !g.Has(u) {
 		t.Errorf("Expected to have %s [node] in graph. ", u.ToString())
 	}
 
-	check := g.EdgeExist(u, nil)
+	check := g.EdgeExist(u, NewNode(""))
 	if check == true {
 		t.Errorf("Expected not to have edge exist for `%s` and nil object", u.ToString())
 	}
@@ -51,7 +51,7 @@ func TestBasicOperation(t *testing.T) {
 		t.Errorf("Expected to have Edge exist between `%s` and `%s`", u.ToString(), v.ToString())
 	}
 
-	x := NewNode([]byte("Outlier"))
+	x := NewNode("Outlier")
 	if g.Has(x) {
 		t.Errorf("Expected not to have `%s` node.", x.ToString())
 	}
@@ -76,7 +76,7 @@ func TestBasicOperation(t *testing.T) {
 func BenchmarkAddSingleNode(b *testing.B) {
 	g, u, _ := setupTest()
 	for i:=0; i<b.N; i++ {
-		g.AddNodes(u, nil)
+		g.AddNodes(u, NewNode(""))
 	}
 }
 
@@ -89,7 +89,7 @@ func BenchmarkAddNodeWithEdge(b *testing.B) {
 
 func BenchmarkNodeConnectedWithTwoNode(b *testing.B) {
 	g, u, v := setupTest()
-	x := NewNode([]byte("X"))
+	x := NewNode("X")
 	for i:=0; i<b.N; i++ {
 		g.AddNodes(u, v)
 		g.AddNodes(u, x)
@@ -98,7 +98,7 @@ func BenchmarkNodeConnectedWithTwoNode(b *testing.B) {
 
 func BenchmarkAddChainOfNodes(b *testing.B) {
 	g, u, v := setupTest()
-	x := NewNode([]byte("Chaining"))
+	x := NewNode("Chaining")
 	for i:=0; i<b.N; i++ {
 		g.AddNodes(u,v)
 		g.AddNodes(v,x)
