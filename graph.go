@@ -20,4 +20,7 @@ type Graph interface {
 
 	// EdgeExist returns true if two nodes are connected from u->v otherwise return false
 	EdgeExist(u, v Node) bool
+
+	// HasEdges returns true if the node has one or more edge/s
+	HasEdges(u Node) bool
 }
