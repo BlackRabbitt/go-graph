@@ -2,7 +2,7 @@ package digraph
 
 import "testing"
 
-func setupTest() (g *Graph, u, v Node) {
+func setupTest() (g *Graph, u, v *Node) {
 	g = NewGraph()
 	u = NewNode("Wikipedia")
 	v = NewNode("Article")
@@ -11,11 +11,17 @@ func setupTest() (g *Graph, u, v Node) {
 
 func TestBasicOperation(t *testing.T) {
 	g,u,v := setupTest()
+	var ok bool
 
 	t.Log("Test: Add Single Node")
 	g.AddNodes(u, NewNode(""))
-	if !g.Has(u) {
+	if ok, _=g.Has(u); !ok {
 		t.Errorf("Expected to have %s [node] in graph. ", u.ToString())
+	}
+
+	o := NewNode("Wikipedia")
+	if ok, _=g.Has(u); !ok {
+		t.Errorf("Expected to have %s [node] already in graph. ", o.ToString())
 	}
 
 	check := g.EdgeExist(u, NewNode(""))
@@ -39,11 +45,11 @@ func TestBasicOperation(t *testing.T) {
 
 	t.Log("Test: Add Nodes with edge.")
 	g.AddNodes(u, v)
-	if !g.Has(u) {
+	if ok, _ =g.Has(u); !ok {
 		t.Errorf("Expected to have %s [node] in graph. ", u.ToString())
 	}
 
-	if !g.Has(v) {
+	if ok, _ =g.Has(u); !ok {
 		t.Errorf("Expected to have %s [node] in graph. ", v.ToString())
 	}
 
@@ -52,7 +58,7 @@ func TestBasicOperation(t *testing.T) {
 	}
 
 	x := NewNode("Outlier")
-	if g.Has(x) {
+	if ok, _ = g.Has(x); ok {
 		t.Errorf("Expected not to have `%s` node.", x.ToString())
 	}
 
