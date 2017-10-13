@@ -79,6 +79,23 @@ func TestBasicOperation(t *testing.T) {
 	}
 }
 
+func TestConcurrentSafety(t *testing.T) {
+	g := NewGraph()
+	u := NewNode("one")
+	v := NewNode("hundred")
+	y := NewNode("thousand")
+	go func() {
+		g.AddNodes(u, v)
+		g.AddNodes(u, y)
+	}()
+
+	for {
+		if ok, _ := g.Has(u); ok {
+			g.Edges(u)
+		}
+	}
+}
+
 func BenchmarkAddSingleNode(b *testing.B) {
 	g, u, _ := setupTest()
 	for i:=0; i<b.N; i++ {
