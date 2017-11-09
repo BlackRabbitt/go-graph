@@ -11,37 +11,37 @@ import (
 
 // Node is a simple graph node.
 type Node struct {
-	value []byte
+	Value []byte
 }
 
 // Graph is a set of Nodes, Edges
 type Graph struct {
-	nodes []*Node
+	Nodes []*Node
 
 	// protect maps from concurrent read/write
 	sync.RWMutex
 
-	arcs map[*Node][]*Node
+	Arcs map[*Node][]*Node
 }
 
 func NewGraph() *Graph {
 	graph := new(Graph)
-	graph.arcs = make(map[*Node][]*Node)
+	graph.Arcs = make(map[*Node][]*Node)
 	return graph
 }
 
 func NewNode(v string) *Node {
-	return &Node{value: []byte(strings.ToLower(v))}
+	return &Node{Value: []byte(strings.ToLower(v))}
 }
 
 func (n *Node) ToString() string {
-	return string(n.value)
+	return string(n.Value)
 }
 
 func (g *Graph) Has(node *Node) (bool, *Node) {
-	for i := range g.nodes {
-		if node.equal(g.nodes[i]) {
-			return true, g.nodes[i]
+	for i := range g.Nodes {
+		if node.equal(g.Nodes[i]) {
+			return true, g.Nodes[i]
 		}
 	}
 	return false, node
@@ -52,27 +52,27 @@ func (g *Graph) AddNodes(u *Node, v *Node) {
 	var ok bool
 	ok, u = g.Has(u)
 	if !ok {
-		g.nodes = append(g.nodes, u)
+		g.Nodes = append(g.Nodes, u)
 	}
 
-	if len(v.value)>0 {
+	if len(v.Value) > 0 {
 		ok, v = g.Has(v)
 		if !ok {
-			g.nodes = append(g.nodes, v)
+			g.Nodes = append(g.Nodes, v)
 		}
 
 		// Connect `u` node with `v` node.
 		if !g.EdgeExist(u, v) {
 			g.Lock()
-			g.arcs[u] = append(g.arcs[u], v)
+			g.Arcs[u] = append(g.Arcs[u], v)
 			g.Unlock()
 		}
 	}
 }
 
 // returns all nodes in the graph
-func (g *Graph) Nodes() ([]*Node, int) {
-	return g.nodes, len(g.nodes)
+func (g *Graph) AllNodes() ([]*Node, int) {
+	return g.Nodes, len(g.Nodes)
 }
 
 // EdgeExists returns true if atleast one arc exist from `u` to `v`
@@ -80,7 +80,7 @@ func (g *Graph) EdgeExist(u, v *Node) bool {
 	_, u = g.Has(u)
 
 	g.RLock()
-	adjArcs, ok:= g.arcs[u]
+	adjArcs, ok := g.Arcs[u]
 	g.RUnlock()
 	if ok {
 		for i := range adjArcs {
@@ -91,12 +91,13 @@ func (g *Graph) EdgeExist(u, v *Node) bool {
 	}
 	return false
 }
+
 // returns adjacent arc nodes for node `u`
 func (g *Graph) Edges(u *Node) ([]*Node, int) {
 	_, u = g.Has(u)
 
 	g.RLock()
-	edges := g.arcs[u]
+	edges := g.Arcs[u]
 	g.RUnlock()
 	return edges, len(edges)
 }
@@ -104,14 +105,14 @@ func (g *Graph) Edges(u *Node) ([]*Node, int) {
 // returns true if edge has arcs.
 func (g *Graph) HasEdges(u *Node) bool {
 	_, l := g.Edges(u)
-	if l>0 {
+	if l > 0 {
 		return true
 	}
 	return false
 }
 
 func (u *Node) equal(v *Node) bool {
-	if bytes.Equal(u.value, v.value) {
+	if bytes.Equal(u.Value, v.Value) {
 		return true
 	}
 	return false
