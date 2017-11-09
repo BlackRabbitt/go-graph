@@ -4,6 +4,7 @@ Implementation of graph datastructure in golang.
 
 ## Features
 1. Directed Graph implemented.
+2. Concurrent Directed Graph implemented.
 
 ## Getting Started
 
